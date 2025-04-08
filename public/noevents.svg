@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="240" height="240" rx="24" fill="#F9FAFB"/>
+
+  <!-- Calendar Base -->
+  <rect x="60" y="60" width="120" height="120" rx="12" fill="white" stroke="#D1D5DB" stroke-width="2"/>
+
+  <!-- Calendar Header -->
+  <rect x="60" y="60" width="120" height="32" fill="#2563EB" rx="12"/>
+
+  <!-- Header Dots -->
+  <circle cx="80" cy="76" r="4" fill="white"/>
+  <circle cx="100" cy="76" r="4" fill="white"/>
+  <circle cx="120" cy="76" r="4" fill="white"/>
+
+  <!-- Cross Icon (X) -->
+  <line x1="105" y1="120" x2="135" y2="150" stroke="#9CA3AF" stroke-width="4" stroke-linecap="round"/>
+  <line x1="135" y1="120" x2="105" y2="150" stroke="#9CA3AF" stroke-width="4" stroke-linecap="round"/>
+</svg>
