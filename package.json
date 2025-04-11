@@ -7,12 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
-    "tailwindcss": "^3.4.1",
-    "prisma": "^6.5.0",
-    "postcss": "^8",
     "@clerk/nextjs": "^6.12.4",
     "@hookform/resolvers": "^5.0.1",
     "@prisma/client": "^6.5.0",
@@ -32,6 +30,8 @@
     "googleapis": "^148.0.0",
     "lucide-react": "^0.475.0",
     "next": "15.1.7",
+    "postcss": "^8.4.38",
+    "prisma": "^6.5.0",
     "react": "^19.0.0",
     "react-day-picker": "^9.6.5",
     "react-dom": "^19.0.0",
@@ -40,6 +40,7 @@
     "react-spinners": "^0.15.0",
     "shadcn-ui": "^0.9.4",
     "tailwind-merge": "^3.0.1",
+    "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.2",
     "zod": "^3.24.2"
@@ -53,9 +54,6 @@
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-react": "^7.37.4",
     "globals": "^15.15.0",
-    "postcss": "^8",
-    "prettier": "^3.5.1",
-    "prisma": "^6.5.0",
-    "tailwindcss": "^3.4.1"
+    "prettier": "^3.5.1"
   }
 }
