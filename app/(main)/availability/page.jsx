@@ -5,7 +5,7 @@ import { defaultAvailability } from '@/app/_lib/constants'
 
 const AvailabilityPage = async () => {
   const availability = await getUserAvailability()
-  console.log('🚀 ~ AvailabilityPage ~ availability:', availability)
+  console.log('🚀 ~ AvailabilityPage ~ availability:', availability, defaultAvailability)
 
   return (
     <div>

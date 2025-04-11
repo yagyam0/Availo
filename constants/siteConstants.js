@@ -21,7 +21,7 @@ const features = [
 ]
 
 const howItWorks = [
-  { id: 1, step: 'Sign Up', description: 'Create your free Calendly account' },
+  { id: 1, step: 'Sign Up', description: 'Create your free Availo account' },
   {
     id: 2,
     step: 'Set Availability',

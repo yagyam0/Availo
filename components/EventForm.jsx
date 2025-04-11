@@ -10,6 +10,7 @@ import useFetch from '@/hooks/useFetch'
 import { createNewEvent } from '@/actions/events'
 import { useRouter } from 'next/navigation'
 import { eventFormFields } from '@/app/_lib/FormFields'
+import toast from 'react-hot-toast'
 
 const EventForm = ({ onSubmitForm }) => {
   const router = useRouter()
@@ -32,13 +33,15 @@ const EventForm = ({ onSubmitForm }) => {
 
   const isPrivate = watch('isPrivate')
 
-  const { loading, error, makeCall } = useFetch(createNewEvent)
+  const { loading, data, error, makeCall } = useFetch(createNewEvent)
 
   const onSubmit = async (formData) => {
     console.log('🚀 ~ onSubmit ~ formData:', formData)
     await makeCall(formData)
-    if (onSubmitForm && !loading && !error) onSubmitForm(formData)
-    router.refresh();
+    if (onSubmitForm && !loading && !error) onSubmitForm()
+    if (data?.success) toast.success('Event created successfully.')
+    else toast.error('Failed to create an event.')
+    router.refresh()
   }
 
   return (
@@ -102,9 +105,7 @@ const EventForm = ({ onSubmitForm }) => {
           </div>
         )
       })}
-      {error && (
-        <p className="text-sm text-red-600 mt-1">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
       <Button type="submit" disabled={loading} className="w-full main-bg">
         {loading ? 'Submitting...' : 'Create Event'}
       </Button>

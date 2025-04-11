@@ -20,7 +20,7 @@ export default function Home() {
         Ready to Simplify Your Scheduling?
       </h2>
       <p className="text-lg text-gray-200 mb-6 max-w-lg mx-auto">
-        Join thousands of professionals who trust Calendly for effortless
+        Join thousands of professionals who trust Availo for effortless
         scheduling and time management.
       </p>
       <Link href="/dashboard">

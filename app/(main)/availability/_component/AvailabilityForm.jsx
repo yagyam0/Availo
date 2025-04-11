@@ -21,9 +21,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import React, { Fragment } from 'react'
 import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 
 const AvailabilityForm = ({ initialData }) => {
-  const router = useRouter();
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -31,12 +32,13 @@ const AvailabilityForm = ({ initialData }) => {
     watch,
     formState: { errors },
   } = useForm({
-    mode: 'onChange',
+    // mode: 'onChange',
     resolver: zodResolver(availabilitySchema),
     defaultValues: {
       ...initialData,
     },
   })
+  console.log('🚀 ~ errors:', errors)
 
   console.log('🚀 ~ AvailabilityForm ~ errors:', errors)
   const timeField = [
@@ -44,11 +46,13 @@ const AvailabilityForm = ({ initialData }) => {
     { id: 2, name: 'endTime', label: 'End time' },
   ]
 
-  const { loading, error, makeCall } = useFetch(updateAvailability)
+  const { loading, data, error, makeCall } = useFetch(updateAvailability)
 
   const onSubmit = async (formData) => {
-    await makeCall(formData);
-    router.refresh();
+    await makeCall(formData)
+    if (data?.success) toast.success('Availability added successfully.')
+    else toast.error('Failed to update the availability.')
+    router.refresh()
   }
 
   return (
@@ -103,7 +107,8 @@ const AvailabilityForm = ({ initialData }) => {
                           onValueChange={(value) =>
                             setValue(
                               `${day.toLowerCase()}.${field.name}`,
-                              value
+                              value,
+                              { shouldValidate: true }
                             )
                           }
                           defaultValue={
@@ -113,13 +118,12 @@ const AvailabilityForm = ({ initialData }) => {
                           <SelectTrigger
                             className={cn(
                               'w-32 border-blue-300 shadow-sm',
-                              errors?.[day.toLowerCase()]?.endTime && name === 'endTime' &&
+                              errors?.[day.toLowerCase()]?.endTime &&
+                                name === 'endTime' &&
                                 'border-red-500 ring-1 ring-red-300'
                             )}
                           >
-                            <SelectValue
-                              placeholder={`${field.label}`}
-                            />
+                            <SelectValue placeholder={`${field.label}`} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
@@ -174,6 +178,10 @@ const AvailabilityForm = ({ initialData }) => {
           </div>
 
           {error && <p className="text-sm text-red-500">{error.message}</p>}
+          {errors?._form && (
+            <p className="text-sm text-red-500 mt-2">{errors._form.message}</p>
+          )}
+
           <Button className="mt-5 bg-blue-600" disabled={loading} type="submit">
             {loading ? 'Updating...' : 'Update Availability'}
           </Button>

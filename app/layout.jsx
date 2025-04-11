@@ -8,7 +8,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import CreateEventDrawer from '@/components/CreateEventDrawer'
 
 export const metadata = {
-  title: 'Calendly',
+  title: 'Availo',
   description: 'Event Scheduling app',
   icons: {
     icon: '/favicon.ico',

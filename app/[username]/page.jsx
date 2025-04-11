@@ -17,7 +17,7 @@ export async function generateMetadata({ params }) {
     }
   } else {
     return {
-      title: `${user.name}'s Profile | Calendly`,
+      title: `${user.name}'s Profile | Availo`,
       description: `Book an event with ${user.name}. View available public events and schedules.`,
     }
   }

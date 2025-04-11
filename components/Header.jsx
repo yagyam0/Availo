@@ -21,12 +21,12 @@ export default async function Header() {
       >
         <Image
           src={logoImg}
-          alt="Calendly Logo"
+          alt="Availo Logo"
           width={150}
           height={60}
           className="h-12 w-auto"
         />
-        <span className="text-2xl font-semibold gradient-title">Calendly</span>
+        <span className="text-2xl font-semibold gradient-title">Availo</span>
       </Link>
 
       {/* Navigation Actions */}

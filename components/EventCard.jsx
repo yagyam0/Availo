@@ -10,8 +10,10 @@ import useFetch from '@/hooks/useFetch'
 import { deleteEvent } from '@/actions/events'
 import { useRouter } from 'next/navigation'
 import { AlertUserDialog } from './AlertUserDialog'
+import toast from 'react-hot-toast'
 
 const EventCard = ({ event, username, isPublic = false }) => {
+  console.log('🚀 ~ EventCard ~ username:', username)
   const [copy, setCopy] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
@@ -31,13 +33,19 @@ const EventCard = ({ event, username, isPublic = false }) => {
 
   const handleCardClick = (e) => {
     const { tagName } = e.target
+    console.log('🚀 ~ handleCardClick ~ tagName:', tagName)
 
-    if (!['BUTTON', 'SVG'].includes(tagName)) {
+    if (!['BUTTON', 'SPAN', 'SVG'].includes(tagName)) {
       window.open(`${window.location.origin}/${username}/${event.id}`, '_blank')
     }
   }
 
-  const { loading, makeCall: deleteEventById, error } = useFetch(deleteEvent)
+  const {
+    loading,
+    data,
+    makeCall: deleteEventById,
+    error,
+  } = useFetch(deleteEvent)
   console.log('🚀 ~ EventCard: delete event error', error)
 
   const handleShowDialog = () => {
@@ -46,6 +54,8 @@ const EventCard = ({ event, username, isPublic = false }) => {
 
   const handleDeleteEvent = async () => {
     await deleteEventById(event?.id)
+    if (data?.success) toast.success('Event deleted successfully.')
+    else toast.error('Failed to delete the event.')
     router.refresh()
   }
 

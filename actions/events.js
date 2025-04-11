@@ -3,6 +3,14 @@
 import { createEventSchema } from '@/app/_lib/validators'
 import { db } from '@/lib/prisma'
 import { auth } from '@clerk/nextjs/server'
+import {
+  addDays,
+  addMinutes,
+  format,
+  isBefore,
+  parseISO,
+  startOfDay,
+} from 'date-fns'
 
 export async function createNewEvent(eventData) {
   console.log('🚀 ~ createNewEvent ~ eventData:', eventData)
@@ -44,6 +52,7 @@ export async function getUserEvents() {
     isUser = await db.user.findUnique({
       where: { clerkUserId: userId },
     })
+    console.log("🚀 ~ getUserEvents ~ isUser:", isUser)
 
     if (!isUser) {
       throw new Error("User doesn't exist.")
@@ -102,24 +111,135 @@ export async function deleteEvent(eventId) {
 
 export async function getEventDetails(data) {
   const { username, eventId } = data
+  let event
 
-  const event = await db.event.findFirst({
+  try {
+    event = await db.event.findFirst({
+      where: {
+        id: eventId,
+        user: {
+          username: username,
+        },
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            imageUrl: true,
+            email: true,
+          },
+        },
+      },
+    })
+  } catch (error) {
+    console.log('🚀 ~ getEventDetails ~ error:', error)
+  }
+
+  return event
+}
+
+export async function getEventAvailability(eventId) {
+  const event = await db.event.findUnique({
     where: {
       id: eventId,
-      user: {
-        username: username,
-      },
     },
     include: {
       user: {
-        select: {
-          name: true,
-          imageUrl: true,
-          email: true,
+        include: {
+          availability: {
+            select: {
+              days: true,
+              timeGap: true,
+            },
+          },
+          bookings: {
+            select: {
+              startTime: true,
+              endTime: true,
+            },
+          },
         },
       },
     },
   })
 
-  return event
+  if (!event || !event.user.availability) {
+    return []
+  }
+
+  const { availability, bookings } = event.user
+  const startDate = startOfDay(new Date())
+  const endDate = addDays(startDate, 30)
+
+  const availableDates = []
+
+  for (let date = startDate; date <= endDate; date = addDays(date, 1)) {
+    const dayOfWeek = format(date, 'EEEE').toUpperCase()
+    const dayAvailability = availability.days.find(
+      ({ day }) => day === dayOfWeek
+    )
+
+    if (dayAvailability) {
+      const dateStr = format(date, 'yyyy-MM-dd')
+
+      const slots = generateAvailableTimeSlots(
+        dayAvailability.startTime,
+        dayAvailability.endTime,
+        event.duration,
+        bookings,
+        dateStr,
+        availability.timeGap
+      )
+
+      availableDates.push({ date: dateStr, slots })
+    }
+  }
+
+  return availableDates
+}
+
+function generateAvailableTimeSlots(
+  startTime,
+  endTime,
+  duration,
+  bookings,
+  dateStr,
+  timeGap = 0
+) {
+  const slots = []
+  let slotStartTime = parseISO(
+    `${dateStr}T${startTime.toISOString().slice(11, 16)}`
+  )
+  const slotEndTime = parseISO(
+    `${dateStr}T${endTime.toISOString().slice(11, 16)}`
+  )
+
+  const now = new Date()
+  if (format(now, 'yyyy-MM-dd') === dateStr) {
+    slotStartTime = isBefore(slotStartTime, now)
+      ? addMinutes(now, timeGap)
+      : slotStartTime
+  }
+
+  while (slotStartTime < slotEndTime) {
+    const slotEnd = new Date(slotStartTime.getTime() + duration * 60000)
+    const isSlotAvailable = !bookings.some((booking) => {
+      const bookingStart = booking.startTime
+      const bookingEnd = booking.endTime
+
+      return (
+        (slotStartTime >= bookingStart && slotStartTime < bookingEnd) ||
+        (slotEnd > bookingStart && slotEnd <= bookingEnd) ||
+        (slotStartTime <= bookingStart && slotEnd >= bookingEnd)
+      )
+    })
+
+    if (isSlotAvailable) {
+      slots.push(format(slotStartTime, 'HH:mm'))
+    }
+
+    slotStartTime = slotEnd
+  }
+
+  return slots
 }

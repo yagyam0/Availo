@@ -38,3 +38,31 @@ export const eventFormFields = [
     component: Checkbox,
   },
 ]
+
+
+export const bookingFormFields = [
+  {
+    id: 1,
+    name: 'name',
+    label: 'Name',
+    placeholder: 'Enter name',
+    type: 'text',
+    component: Input,
+  },
+  {
+    id: 2,
+    name: 'email',
+    label: 'Email',
+    placeholder: 'Enter email',
+    type: 'email',
+    component: Input,
+  },
+  {
+    id: 3,
+    name: 'additionalInfo',
+    label: 'Additional Info...',
+    placeholder: 'Description',
+    type: 'textarea',
+    component: Textarea,
+  },
+]

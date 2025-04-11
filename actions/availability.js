@@ -31,7 +31,7 @@ export const getUserAvailability = async () => {
 
     daysOfWeek.forEach((day) => {
       const dayAvailability = isUser.availability.days.find(
-        (d) => d.days === day
+        (d) => d.day === day
       )
 
       availabilityData[day] = {

@@ -8,18 +8,44 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const navItems = [
-  { id: 1, href: '/dashboard', label: 'Dashboard', icon: BarChart },
-  { id: 2, href: '/events', label: 'Events', icon: Calendar },
-  { id: 3, href: '/meetings', label: 'Meetings', icon: Users },
-  { id: 4, href: '/availability', label: 'Availability', icon: Clock },
+  {
+    id: 1,
+    href: '/dashboard',
+    label: 'Dashboard',
+    icon: BarChart,
+    description:
+      'Get an overview of your activity, meeting stats, and engagement summary.',
+  },
+  {
+    id: 2,
+    href: '/events',
+    label: 'Events',
+    icon: Calendar,
+    description: 'Create and manage events your attendees can book time for.',
+  },
+  {
+    id: 3,
+    href: '/meetings',
+    label: 'Meetings',
+    icon: Users,
+    description:
+      'View and manage your upcoming and past meetings all in one place.',
+  },
+  {
+    id: 4,
+    href: '/availability',
+    label: 'Availability',
+    icon: Clock,
+    description:
+      'Set your available hours so people can book meetings that fit your schedule.',
+  },
 ]
 
 const AppLayout = ({ children }) => {
   const { isLoaded } = useUser()
   const pathname = usePathname()
 
-  const getHeaderName = (pathname) =>
-    navItems.find(({ href }) => href === pathname)?.label || ''
+  const currentPage = navItems.find(({ href }) => href === pathname)
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-gray-100 to-white">
@@ -27,7 +53,7 @@ const AppLayout = ({ children }) => {
       <aside className="hidden md:flex flex-col w-64 bg-white shadow-xl h-screen p-6 fixed top-0 left-0 z-30 border-r border-gray-200">
         <div className="text-2xl font-bold text-blue-600 mb-8 tracking-tight">
           <span className="inline-block bg-blue-100 text-blue-600 px-3 py-1 rounded-xl">
-            Calendly
+            Availo
           </span>
         </div>
         <nav className="space-y-2">
@@ -51,15 +77,20 @@ const AppLayout = ({ children }) => {
       {/* Main content */}
       <main className="flex-1 md:ml-64 p-6 pb-20 md:pb-6 relative overflow-x-hidden">
         {!isLoaded && (
-          <div className="absolute inset-0 z-50 border-4 ">
+          <div className="absolute inset-0 z-50">
             <BarLoader width="100%" color="#3b82f6" />
           </div>
         )}
 
         <header className="mb-6 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-semibold gradient-title tracking-tight text-center md:text-left">
-            {getHeaderName(pathname)}
+          <h2 className="text-4xl md:text-5xl font-semibold text-blue-600 tracking-tight text-center md:text-left">
+            {currentPage?.label || ''}
           </h2>
+          {currentPage?.description && (
+            <p className="text-gray-600 text-sm sm:text-base mt-2 max-w-2xl">
+              {currentPage.description}
+            </p>
+          )}
         </header>
 
         {children}
