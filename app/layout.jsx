@@ -6,6 +6,7 @@ import './globals.css'
 import Header from '@/components/Header'
 import { ClerkProvider } from '@clerk/nextjs'
 import CreateEventDrawer from '@/components/CreateEventDrawer'
+import { Suspense } from 'react'
 
 export const metadata = {
   title: 'Availo',
@@ -33,7 +34,9 @@ export default function RootLayout({ children }) {
               <p>Made with 💖 by cloud.com</p>
             </div>
           </footer>
-          <CreateEventDrawer />
+          <Suspense fallback={<div>Loading drawer</div>}>
+            <CreateEventDrawer />
+          </Suspense>
         </body>
       </html>
     </ClerkProvider>
